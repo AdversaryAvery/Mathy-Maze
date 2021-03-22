@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 namespace Com.CharismaZero.MathyMaze
 {
+    
     public class Launcher : MonoBehaviourPunCallbacks
     {
 
-
+        public InputField roomName;
         #region Private Serializable Fields
         [Tooltip("The maximum number of players per room. When a room is full, it can't be joined by new players, and so new room will be created")]
         [SerializeField]
@@ -72,7 +74,13 @@ namespace Com.CharismaZero.MathyMaze
             if (PhotonNetwork.IsConnected)
             {
                 // #Critical we need at this point to attempt joining a Random Room. If it fails, we'll get notified in OnJoinRandomFailed() and we'll create one.
-                PhotonNetwork.JoinRandomRoom();
+                if (roomName.text != "") { 
+                    PhotonNetwork.JoinOrCreateRoom(roomName.text, new RoomOptions { MaxPlayers = maxPlayersPerRoom }, new TypedLobby(roomName.text, new LobbyType()), null); 
+                }
+                else
+                {
+                    PhotonNetwork.JoinRandomRoom();
+                }
             }
             else
             {
@@ -94,7 +102,14 @@ namespace Com.CharismaZero.MathyMaze
         public override void OnConnectedToMaster()
         {
             Debug.Log("PUN Basics Tutorial/Launcher: OnConnectedToMaster() was called by PUN");
-            PhotonNetwork.JoinRandomRoom();
+            if (roomName.text != "")
+            {
+                PhotonNetwork.JoinOrCreateRoom(roomName.text, new RoomOptions { MaxPlayers = maxPlayersPerRoom }, new TypedLobby(roomName.text, new LobbyType()), null);
+            }
+            else
+            {
+                PhotonNetwork.JoinRandomRoom();
+            }
         }
 
 
@@ -110,7 +125,7 @@ namespace Com.CharismaZero.MathyMaze
             Debug.Log("PUN Basics Tutorial/Launcher:OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
 
             // #Critical: we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
-            PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = maxPlayersPerRoom });
+            PhotonNetwork.CreateRoom(roomName.text, new RoomOptions { MaxPlayers = maxPlayersPerRoom });
 
            
         }

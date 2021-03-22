@@ -153,8 +153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 691644925b9a22e44a2ae0d204421dd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mazeWidth: 101
-  mazeHeight: 101
+  mazeWidth: 13
+  mazeHeight: 13
   wall: {fileID: 4128413197006630455, guid: c4a2b2f8be2d39449855f80abeb876e6, type: 3}
   space: {fileID: 2744811488356642732, guid: 0c200c6669fd7034cbaa380da071a810, type: 3}
   altSpace: {fileID: 2744811488356642732, guid: c6cc386335382a5469b36b81957dfab9, type: 3}

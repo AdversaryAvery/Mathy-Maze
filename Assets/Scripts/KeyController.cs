@@ -11,7 +11,8 @@ public class KeyController : MonoBehaviour
     public ControlScript controlScript;
     private GameObject questionLock;
     public TMP_InputField inputField;
-
+    public AudioSource goodBlip;
+    public AudioSource badBlip;
     public int answer;
 
 
@@ -56,10 +57,12 @@ public class KeyController : MonoBehaviour
             inputField.text = "";
             questionUI.SetActive(false);
             gameObject.GetComponent<WallStopper>().ClearBlocked();
+            goodBlip.Play();
         }
 
         else {
             inputField.text = "";
+            badBlip.Play();
         }
     }
 }

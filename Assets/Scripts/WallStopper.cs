@@ -7,9 +7,19 @@ public class WallStopper : MonoBehaviour
     // Start is called before the first frame update
 
     private bool isBlocked;
+    private bool isStarted = false;
     void Start()
     {
         isBlocked = false;
+    }
+
+    private void Update()
+    {
+        if(!isStarted && !Blocker.exists)
+        {
+            isStarted = true;
+            isBlocked = false;
+        }
     }
 
     // Update is called once per frame

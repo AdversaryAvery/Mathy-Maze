@@ -8,10 +8,10 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviourPun
 {
 
-    public int mazeWidth = 15;
-    public int mazeHeight = 15;
+    public static int mazeWidth = 15;
+    public static int mazeHeight = 15;
 
-    private int[,] maze;
+    public static int[,] maze;
 
     public GameObject wall;
     public GameObject space;
@@ -26,14 +26,32 @@ public class GameController : MonoBehaviourPun
     private int questionCount = 1;
 
     public static GameObject exists;
+
+    public static bool isStarted;
+    public static float timer;
+    public static int readyPlayers;
     // Start is called before the first frame update
     void Start()
     {
         if (exists) { Destroy(this); }
         else
         {
+            timer = 60.0f;
+            isStarted = false;
 
             Hashtable hashtable = PhotonNetwork.CurrentRoom.CustomProperties;
+
+            if (!hashtable.ContainsKey("isStarted"))
+            {
+                hashtable.Add("isStarted", false);
+                hashtable.Add("Ready Players", 0);
+            }
+            else
+            {
+                readyPlayers = (int)hashtable["Ready Players"];
+            }
+
+
 
             //hashtable.Add("Seed", seed);
 
@@ -58,7 +76,7 @@ public class GameController : MonoBehaviourPun
 
             }
             else {
-                seed = (int) hashtable["Seed"];
+                seed = (int)hashtable["Seed"];
             }
             Random.InitState(seed);
             int i, j;
@@ -125,7 +143,7 @@ public class GameController : MonoBehaviourPun
                     maze[x + 1, y] = 1;
                     maze[x + 2, y] = 1;
                     hasExit = true;
-                    Instantiate(endZone, new Vector3(x * 2 + 8f, 0f, y * 2), Quaternion.identity) ;
+                    Instantiate(endZone, new Vector3(x * 2 + 8f, 0f, y * 2), Quaternion.identity);
                 }
             }
 
@@ -154,25 +172,59 @@ public class GameController : MonoBehaviourPun
 
                 }
             }
+            PhotonNetwork.CurrentRoom.SetCustomProperties(hashtable);
         }
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
+        int count = 0;
         if (Input.GetKey(KeyCode.Escape))
         {
             Application.Quit();
         }
+
+        Hashtable hashtable = PhotonNetwork.CurrentRoom.CustomProperties;
+        readyPlayers = (int)hashtable["Ready Players"];
+
+        for(int i = 1; i < PhotonNetwork.CurrentRoom.PlayerCount+1; i++)
+        {
+            if (hashtable.ContainsKey("Ready" + i.ToString()))
+            {
+                count++;
+            }
+        }
+        if (!isStarted && ((int)hashtable["Ready Players"] > 0 || count > 0))
+        {
+            timer -= Time.deltaTime;
+        }
+
+        if (timer <= 0 || (!(bool)hashtable["isStarted"] && ((int)hashtable["Ready Players"] >= PhotonNetwork.CurrentRoom.PlayerCount) || count >= PhotonNetwork.CurrentRoom.PlayerCount))
+        {
+            hashtable["isStarted"] = true;
+        }
+
+        if((bool)hashtable["isStarted"] && !isStarted)
+        {
+            isStarted = true;
+            timer = 0.0f;
+        }
+
+        if (isStarted)
+        {
+            timer += Time.deltaTime;
+        }
+        hashtable["Ready Players"] = count;
+        readyPlayers = count;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(hashtable);
     }
 
     private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
     }
+
+    
 }

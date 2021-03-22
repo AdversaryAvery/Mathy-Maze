@@ -22,6 +22,8 @@ namespace Com.CharismaZero.MathyMaze
         public static GameObject localCamera;
         public static int seed;
 
+        public string roomName;
+
         #region Photon Callbacks
 
 
@@ -67,7 +69,10 @@ namespace Com.CharismaZero.MathyMaze
                 {
                     Debug.LogFormat("We are Instantiating LocalPlayer");
                     // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-                    GameObject temp = PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
+                    if (PlayerPrefs.GetInt("Admin") == 0)
+                    {
+                        GameObject temp = PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0);
+                    }
                    
                     /*
                     temp.transform.position = new Vector3(-6, 0, GameController.startZ);
