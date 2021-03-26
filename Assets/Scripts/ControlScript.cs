@@ -119,14 +119,14 @@ public class ControlScript : MonoBehaviourPun
             }
             listText.text = "Player \t\tRank\n";
             
-            int index = 1;
-            while (index < PhotonNetwork.CurrentRoom.PlayerCount + 1)
+            int index = 0;
+            while (index < PhotonNetwork.CurrentRoom.PlayerCount)
             {
-                if (hashtable.ContainsKey("playerName" + index.ToString()) && (int)hashtable[hashtable["playerName" + index.ToString()]] != -1) {
+                if ((int)hashtable[PhotonNetwork.PlayerList[index].NickName] != -1) {
 
-                        listText.text += hashtable["playerName" + index.ToString()] + "\t\t" + hashtable[hashtable["playerName" + index.ToString()]].ToString() + "\n";
+                        listText.text += PhotonNetwork.PlayerList[index].NickName + "\t\t" + hashtable[PhotonNetwork.PlayerList[index].NickName].ToString() + "\n";
                     }
-                else { listText.text += hashtable["playerName" + index.ToString()] + "\t\t\n"; } 
+                else { listText.text += PhotonNetwork.PlayerList[index].NickName + "\t\t\n"; } 
                 
 
                 index++;
@@ -279,7 +279,7 @@ public class ControlScript : MonoBehaviourPun
 
             }
             PhotonNetwork.NickName = PlayerPrefs.GetString("PlayerName");
-            hashtable.Add("playerName" + playerNum.ToString(), PhotonNetwork.NickName);
+            //hashtable.Add("playerName" + playerNum.ToString(), PhotonNetwork.NickName);
             hashtable.Add(PhotonNetwork.NickName, 0);
 
             selfNumber = playerNum;
@@ -289,6 +289,7 @@ public class ControlScript : MonoBehaviourPun
 
             listText.text = "Player \t\tRank\n";
             
+            /*
             int index = 1;
             while (index < playerNum)
             {
@@ -301,7 +302,7 @@ public class ControlScript : MonoBehaviourPun
                 index++;
                 
             }
-
+            */
             PhotonNetwork.CurrentRoom.SetCustomProperties(hashtable);
         }
         
