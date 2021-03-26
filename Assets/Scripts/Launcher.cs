@@ -15,7 +15,7 @@ namespace Com.CharismaZero.MathyMaze
         #region Private Serializable Fields
         [Tooltip("The maximum number of players per room. When a room is full, it can't be joined by new players, and so new room will be created")]
         [SerializeField]
-        private byte maxPlayersPerRoom = 8;
+        private byte maxPlayersPerRoom = 12;
         [Tooltip("The Ui Panel to let the user enter name, connect and play")]
         [SerializeField]
         private GameObject controlPanel;
